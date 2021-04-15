@@ -2,11 +2,10 @@ const path = require("path");
 const exp = require('express') ;
 const bodeyParser = require('body-parser') ;
 const mongoose = require('mongoose') ;
-const postsRoutes = require('./routes/posts');
-const usersRoutes = require('./routes/users');
+const authRoutes = require('./routes/auth');
 const app = exp();
 
-mongoose.connect('mongodb+srv://root:fedifedi@meanapp.38mzd.mongodb.net/MeanDB', {useNewUrlParser: true, useUnifiedTopology: true})
+mongoose.connect('mongodb+srv://root:fedifedi@mydelevry.grnig.mongodb.net/mydelevry', {useNewUrlParser: true, useUnifiedTopology: true})
 .then(()=> {
   console.log("connected successfully !");
 })
@@ -27,5 +26,6 @@ app.use((req,res,next)=> {
 
 });
 
+app.use('/api/auth',authRoutes);
 
 module.exports = app;
