@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const unique = require('mongoose-unique-validator');
 const Item = require('./item');
 const deliverySchema = mongoose.Schema({
     owner : {type: mongoose.Schema.Types.ObjectId , ref:"User",required:true},
@@ -9,7 +8,7 @@ const deliverySchema = mongoose.Schema({
     itemShipped : {type: Boolean},
     itemDelivered : {type: Boolean},
     provider : {type: mongoose.Schema.Types.ObjectId},
-    items : [[mongoose.Schema.Types.ObjectId]]
+    items : [mongoose.Schema.Types.ObjectId]
 });
 
 

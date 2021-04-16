@@ -30,77 +30,68 @@ router.post("",checkAuth,(req,res,next)=> {
 
 
 
-// router.put("/:id",checkAuth,multer({storage : storage}).single("image"), (req, res, next) => {
-//   const url = req.protocol + '://' + req.get("host") ;
-//   let delivery ;
-//   if(req.body.imagePath != ""){
+router.put("/:id",checkAuth, (req, res, next) => {
 
-//     delivery = new Delivery({
-//       _id: req.params.id,
-//       title: req.body.title,
-//       content: req.body.content,
-//       imagePath : req.body.imagePath
-//     });
-//   }
-//   else {
-//     delivery = new Delivery({
-//       _id: req.params.id,
-//       title: req.body.title,
-//       content: req.body.content,
-//       imagePath : url + "/images/" + req.file.filename
-//     });
-//   }
-//   Delivery.updateOne({ _id: req.params.id ,creator : req.userData.id}, delivery).then(result => {
-//     if(result.nModified > 0){
-//       res.status(200).json({ message: "Update successful!" });
-//     }
-//     else {
-//       res.status(401).json({ message: "only the owner can modify this !" });
-//     }
+  delivery = new Delivery({
+    _id: req.params.id,
+    originAddress : req.body.originAddress,
+    deliveryAddress :req.body.deliveryAddress,
+    expectedArrivalDate : req.body.expectedArrivalDate,
+    itemShipped : req.body.itemShipped,
+    itemDelivered : req.body.itemDelivered,
+    provider : req.body.provider,
+    items : req.body.items,
+  });
+  Delivery.updateOne({ _id: req.params.id , owner : req.body.owner}, delivery).then(result => {
+    if(result.nModified > 0){
+      res.status(200).json({ message: "Update successful!" });
+    }
+    else {
+      res.status(401).json({ message: "only the owner can modify this !" });
+    }
+  });
+});
 
-//   });
-// });
+router.get('',(req,res,next)=> {
+  console.log(req.query);
+  const pageSize = +req.query.pageSize ;
+  const currentPage = +req.query.currentPage ;
+  const deliveryQuery = Delivery.find() ;
+  let fetcheddeliverys;
+  if(pageSize && currentPage) {
+    deliveryQuery
+      .skip(pageSize * (currentPage - 1))
+      .limit(pageSize);
+  }
 
-// router.get('',(req,res,next)=> {
-//   console.log(req.query);
-//   const pageSize = +req.query.pageSize ;
-//   const currentPage = +req.query.currentPage ;
-//   const deliveryQuery = Delivery.find() ;
-//   let fetcheddeliverys;
-//   if(pageSize && currentPage) {
-//     deliveryQuery
-//       .skip(pageSize * (currentPage - 1))
-//       .limit(pageSize);
-//   }
-
-//   deliveryQuery
-//     .then(documents => {
-//       fetcheddeliverys = documents ;
-//       return Delivery.countDocuments();
-//     })
-//       .then(count => {
-//         res.status(200).json({
-//           message : "result from server:",
-//           deliverys: fetcheddeliverys,
-//           maxPages : count
-//         });
-//       })
-//     .catch();
-// });
+  deliveryQuery
+    .then(documents => {
+      fetchedDeliveries = documents ;
+      return Delivery.countDocuments();
+    })
+      .then(count => {
+        res.status(200).json({
+          message : "result from server:",
+          deliveries: fetchedDeliveries,
+          maxPages : count
+        });
+      })
+    .catch();
+});
 
 
 
-// router.delete('/:id',checkAuth,(req,res,next) => {
-//   Delivery.deleteOne({_id : req.params.id,creator : req.userData.id}).then((result)=>{
-//     console.log(result);
-//     if(result.deletedCount > 0){
-//       res.status(200).json({ message:  'Delivery deleted !'});
-//     }
-//     else {
-//       res.status(401).json({ message: "only the owner can delete this !" });
-//     }
-//   });
+router.delete('/:id',checkAuth,(req,res,next) => {
+  Delivery.deleteOne({_id : req.params.id,owner : req.userData.id}).then((result)=>{
+    console.log(result);
+    if(result.deletedCount > 0){
+      res.status(200).json({ message:  'Delivery deleted !'});
+    }
+    else {
+      res.status(401).json({ message: "only the owner can delete this !" });
+    }
+  });
 
-// });
+});
 
 module.exports = router ;

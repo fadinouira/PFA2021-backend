@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const unique = require('mongoose-unique-validator');
 
 const itemSchema = mongoose.Schema({
-  email : {type: String, required : true, unique:true},
+  name : {type: String, required : true, unique:true},
 });
 
 itemSchema.plugin(unique);
