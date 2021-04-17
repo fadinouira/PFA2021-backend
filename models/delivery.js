@@ -7,8 +7,8 @@ const deliverySchema = mongoose.Schema({
     expectedArrivalDate : {type: Date, required : true},
     itemsShipped : {type: Boolean ,required : true},
     itemsDelivered : {type: Boolean ,required : true},
-    acceptedItems : {type : [mongoose.Schema.Types.ObjectId],ref:"Item",required : true},
-    listedItems : {type : [mongoose.Schema.Types.ObjectId],ref:"Item",required : true}
+    acceptedItems : {type : [mongoose.Schema.Types.ObjectId],ref:"Item"},
+    listedItems : {type : [mongoose.Schema.Types.ObjectId],ref:"Item"}
 });
 
 
