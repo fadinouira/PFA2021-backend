@@ -1,11 +1,12 @@
 const mongoose = require('mongoose');
-const unique = require('mongoose-unique-validator');
 
 const itemSchema = mongoose.Schema({
-  name : {type: String, required : true, unique:true},
+  owner : {type: mongoose.Schema.Types.ObjectId , ref:"User",required:true},
+  name : {type: String, required : true},
+  status : {type: String, required : true},//client,onRoad,onDestination,delivred
+  provider : {type: mongoose.Schema.Types.ObjectId , ref:"User"}
 });
 
-itemSchema.plugin(unique);
 
 module.exports = mongoose.model('Item',itemSchema);
 

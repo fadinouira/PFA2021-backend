@@ -11,6 +11,8 @@ router.post("",checkAuth,(req,res,next)=> {
     originAddress : req.body.originAddress,
     deliveryAddress :req.body.deliveryAddress,
     expectedArrivalDate : req.body.expectedArrivalDate,
+    itemsShipped : false,
+    itemsDelivered : false,
   }) ;
   console.log(delivery);
   delivery.save().then(result => {
@@ -22,6 +24,8 @@ router.post("",checkAuth,(req,res,next)=> {
         originAddress : result.originAddress,
         deliveryAddress :result.deliveryAddress,
         expectedArrivalDate : result.expectedArrivalDate,
+        itemsShipped : result.itemsShipped,
+        itemsDelivered : result.itemsDelivered,
       }
     });
   });
@@ -31,18 +35,17 @@ router.post("",checkAuth,(req,res,next)=> {
 
 
 router.put("/:id",checkAuth, (req, res, next) => {
-
   delivery = new Delivery({
     _id: req.params.id,
     originAddress : req.body.originAddress,
     deliveryAddress :req.body.deliveryAddress,
     expectedArrivalDate : req.body.expectedArrivalDate,
-    itemShipped : req.body.itemShipped,
-    itemDelivered : req.body.itemDelivered,
-    provider : req.body.provider,
-    items : req.body.items,
+    itemsShipped : req.body.itemShipped,
+    itemsDelivered : req.body.itemDelivered,
+    acceptedItems : req.body.acceptedItems,
+    listedItems : req.body.listedItems
   });
-  Delivery.updateOne({ _id: req.params.id , owner : req.body.owner}, delivery).then(result => {
+  Delivery.updateOne({ _id: req.params.id , owner : req.userData.id}, delivery).then(result => {
     if(result.nModified > 0){
       res.status(200).json({ message: "Update successful!" });
     }
@@ -57,7 +60,7 @@ router.get('',(req,res,next)=> {
   const pageSize = +req.query.pageSize ;
   const currentPage = +req.query.currentPage ;
   const deliveryQuery = Delivery.find() ;
-  let fetcheddeliverys;
+  let fetchedDeliveries;
   if(pageSize && currentPage) {
     deliveryQuery
       .skip(pageSize * (currentPage - 1))
@@ -92,6 +95,74 @@ router.delete('/:id',checkAuth,(req,res,next) => {
     }
   });
 
+});
+
+//when a user add an item to be transported
+router.put("/addItem/:id",checkAuth, (req, res, next) => {
+  delivery = {
+    _id: req.params.id,
+    $push : {listedItems : req.body.item} ,
+  };
+  console.log(delivery);
+  Delivery.updateOne({ _id: req.params.id }, delivery).then(result => {
+    if(result.nModified > 0){
+      res.status(200).json({ message: "Item added successfully" });
+    }
+    else {
+      res.status(401).json({ message: "Failed !" });
+    }
+  });
+});
+
+//when the deelivery owner accept an item to be transported
+router.put("/acceptItem/:id",checkAuth, (req, res, next) => {
+  delivery = {
+    _id: req.params.id,
+    $push : {acceptedItems : req.body.item} ,
+  };
+  console.log(delivery);
+  Delivery.updateOne({ _id: req.params.id,owner : req.userData.id }, delivery).then(result => {
+    if(result.nModified > 0){
+      res.status(200).json({ message: "Item accepted" });
+    }
+    else {
+      res.status(401).json({ message: "Failed !" });
+    }
+  });
+});
+
+// when when the deelivery owner start his trip
+router.get("/onRoad/:id",checkAuth, (req, res, next) => {
+  delivery = {
+    _id: req.params.id,
+    itemsShipped:true
+  };
+  console.log(delivery);
+  Delivery.updateOne({ _id: req.params.id,owner : req.userData.id }, delivery).then(result => {
+    if(result.nModified > 0){
+      res.status(200).json({ message: "Items shipped" });
+    }
+    else {
+      res.status(401).json({ message: "Failed !" });
+    }
+  });
+});
+
+// when the deelivery owner get to his destination
+router.get("/delivered/:id",checkAuth, (req, res, next) => {
+  delivery = {
+    _id: req.params.id,
+    itemsDelivered:true
+  };
+  console.log(delivery);
+  Delivery.updateOne({ _id: req.params.id,owner : req.userData.id }, delivery).then(result => {
+    if(result.nModified > 0){
+      res.status(200).json({ message: "Item delivered" });
+    }
+    else {
+      res.status(401).json({ message: "Failed !" });
+    }
+  });
 });
 
 module.exports = router ;

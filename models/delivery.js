@@ -5,10 +5,10 @@ const deliverySchema = mongoose.Schema({
     originAddress : {type: String, required : true},
     deliveryAddress : {type: String, required : true},
     expectedArrivalDate : {type: Date, required : true},
-    itemShipped : {type: Boolean},
-    itemDelivered : {type: Boolean},
-    provider : {type: mongoose.Schema.Types.ObjectId},
-    items : [mongoose.Schema.Types.ObjectId]
+    itemsShipped : {type: Boolean ,required : true},
+    itemsDelivered : {type: Boolean ,required : true},
+    acceptedItems : {type : [mongoose.Schema.Types.ObjectId],ref:"Item",required : true},
+    listedItems : {type : [mongoose.Schema.Types.ObjectId],ref:"Item",required : true}
 });
 
 
