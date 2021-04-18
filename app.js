@@ -4,6 +4,7 @@ const bodeyParser = require('body-parser') ;
 const mongoose = require('mongoose') ;
 const authRoutes = require('./routes/auth');
 const deliveriesRoutes = require('./routes/deliveries');
+const demandesRoutes =  require('./routes/demandes');
 const app = exp();
 
 mongoose.connect('mongodb+srv://root:fedifedi@mydelevry.grnig.mongodb.net/mydelevry', {useNewUrlParser: true, useUnifiedTopology: true})
@@ -29,4 +30,5 @@ app.use((req,res,next)=> {
 
 app.use('/api/auth',authRoutes);
 app.use('/api/deliveries',deliveriesRoutes);
+app.use('/api/demandes',demandesRoutes);
 module.exports = app;
