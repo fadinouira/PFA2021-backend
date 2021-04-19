@@ -15,6 +15,7 @@ router.post("/signup",(req,res,next)=> {
         city : req.body.city,
         location :req.body.location,
         phone : req.body.phone,
+        type : req.body.type
     });
     user.save()
     .then(result => {
