@@ -8,6 +8,7 @@ const userSchema = mongoose.Schema({
   city : {type: String , required : true },
   location :{type: String , required : false },
   phone : {type: Number, required : true, unique:true},
+  type : {type: String, required : true}
 });
 
 userSchema.plugin(unique , {message: 'is already taken.'});
