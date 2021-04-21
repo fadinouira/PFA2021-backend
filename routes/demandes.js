@@ -136,10 +136,9 @@ router.put("/acceptJob/:id",checkAuth, (req, res, next) => {
     _id: req.params.id,
     provider : req.body.provider,
   };
-  var a ;
     const item = {
       _id: req.body.item,
-      status : "shipping", 
+      status : 1, 
     } 
     Item.updateOne({ _id: req.body.item },item).then(result => {
       if(result.nModified > 0){
@@ -157,10 +156,7 @@ router.put("/acceptJob/:id",checkAuth, (req, res, next) => {
       else {
         res.status(401).json({ message: "Failed !" });
       }
-    });
-
-  console.log(a);
-  
+    });  
 });
 
 module.exports = router ;

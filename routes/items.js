@@ -9,7 +9,7 @@ router.post("",checkAuth,(req,res,next)=> {
     const item = new Item({
       owner : req.body.id,
       name : req.body.name,
-      status : "client",
+      status : 0,
       weight  : req.body.weight,
     }) ;
     console.log(item);
@@ -72,50 +72,12 @@ router.delete('/:id',checkAuth,(req,res,next) => {
     });
   });
 
-//onRoad
-var itemShipped = function (id) {
-  const item = {
-      _id: id,
-      status : "shipping", 
-    } 
-    Item.updateOne({ _id: id },item).then(result => {
-      if(result.nModified > 0){
-        return Promise.resolve(true) ;
-      }
-      else {
-        return Promise.resolve(false) ;
-      }
-    });
-
-}
-
-//onDestination
-function itemOnDestination(id) {
-    const item = {
-        _id: id,
-        status : "onDestination", 
-      } ;
-      var res ;
-      setTimeout(()=>{
-        Item.updateOne({ _id: id },item).then(result => {
-          console.log("showing this first") ;
-          if(result.nModified > 0){
-            res = true ;
-          }
-          else {
-            res = false ;
-          }
-        });
-    },5000);
-    console.log("showing this after") ;
-    return res ;
-}
 
 //delivred
 function itemDelivred(id) {
     const item = {
         _id: id,
-        status : "delivred", 
+        status : 4, 
       } ;
     var res ;
     setTimeout(()=>{
@@ -134,6 +96,3 @@ function itemDelivred(id) {
 
 
 module.exports = router ;
-module.exports.itemShipped = itemShipped ;
-module.exports.onDestination = itemOnDestination ;
-module.exports.itemDelivred = itemDelivred ;

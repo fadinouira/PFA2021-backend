@@ -1,6 +1,8 @@
 const express = require('express');
 
 const Delivery = require('../models/delivery');
+const Item = require('../models/item');
+
 const checkAuth = require('../middlewares/check');
 const router = express.Router();
 
@@ -11,8 +13,8 @@ router.post("",checkAuth,(req,res,next)=> {
     originAddress : req.body.originAddress,
     deliveryAddress :req.body.deliveryAddress,
     expectedArrivalDate : req.body.expectedArrivalDate,
-    itemsShipped : false,
-    itemsDelivered : false,
+    onRoad : false ,
+    onDestination : false 
   }) ;
   console.log(delivery);
   delivery.save().then(result => {
@@ -39,8 +41,6 @@ router.put("/:id",checkAuth, (req, res, next) => {
     originAddress : req.body.originAddress,
     deliveryAddress :req.body.deliveryAddress,
     expectedArrivalDate : req.body.expectedArrivalDate,
-    itemsShipped : req.body.itemShipped,
-    itemsDelivered : req.body.itemDelivered,
     acceptedItems : req.body.acceptedItems,
     listedItems : req.body.listedItems
   });
@@ -141,51 +141,81 @@ router.put("/acceptItem/:id",checkAuth, (req, res, next) => {
     _id: req.params.id,
     $push : {acceptedItems : req.body.item} ,
   };
-  console.log(delivery);
-  Delivery.updateOne({ _id: req.params.id,owner : req.userData.id }, delivery).then(result => {
+  const item = {
+    _id: req.body.item,
+    status : 1, 
+  } 
+  Item.updateOne({ _id: req.body.item },item).then(result => {
     if(result.nModified > 0){
-      res.status(200).json({ message: "Item accepted" });
+      Delivery.updateOne({ _id: req.params.id,owner : req.userData.id}, delivery).then(result => {
+        if(result.nModified > 0){
+          res.status(200).json({ message: "Item accepted" });
+        }
+        else {
+          res.status(401).json({ message: "Item status Failed !" });
+        }
+      });
     }
     else {
       res.status(401).json({ message: "Failed !" });
     }
-  });
+  });  
 });
 
 
 // when when the deelivery owner start his trip
-router.get("/onRoad/:id",checkAuth, (req, res, next) => {
+router.put("/onRoad/:id",checkAuth, (req, res, next) => {
   delivery = {
     _id: req.params.id,
-    itemsShipped:true
-  };
-  console.log(delivery);
-  Delivery.updateOne({ _id: req.params.id,owner : req.userData.id }, delivery).then(result => {
+    onRoad : true
+    };
+  const item = {
+    _id: req.body.item,
+    status : 2, 
+  } 
+  Item.updateOne({ _id: req.body.item },item).then(result => {
     if(result.nModified > 0){
-      res.status(200).json({ message: "Items shipped" });
+      Delivery.updateOne({ _id: req.params.id,owner : req.userData.id }, delivery).then(result => {
+        if(result.nModified > 0){
+          res.status(200).json({ message: "Items shipped" });
+        }
+        else {
+          res.status(401).json({ message: "Failed !" });
+        }
+      });
     }
     else {
       res.status(401).json({ message: "Failed !" });
     }
-  });
+  });  
 });
 
 
 // when the deelivery owner get to his destination
-router.get("/delivered/:id",checkAuth, (req, res, next) => {
+router.put("/delivered/:id",checkAuth, (req, res, next) => {
   delivery = {
     _id: req.params.id,
-    itemsDelivered:true
+    onDestination : true
   };
-  console.log(delivery);
-  Delivery.updateOne({ _id: req.params.id,owner : req.userData.id }, delivery).then(result => {
+  const item = {
+    _id: req.body.item,
+    status : 2, 
+  } 
+  Item.updateOne({ _id: req.body.item },item).then(result => {
     if(result.nModified > 0){
-      res.status(200).json({ message: "Item delivered" });
+      Delivery.updateOne({ _id: req.params.id,owner : req.userData.id }, delivery).then(result => {
+        if(result.nModified > 0){
+          res.status(200).json({ message: "Items shipped" });
+        }
+        else {
+          res.status(401).json({ message: "Failed !" });
+        }
+      });
     }
     else {
       res.status(401).json({ message: "Failed !" });
     }
-  });
+  });  
 });
 
 module.exports = router ;
