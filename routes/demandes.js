@@ -1,8 +1,10 @@
 const express = require('express');
 
 const Demande = require('../models/demande');
+const Item = require('../models/item');
 const checkAuth = require('../middlewares/check');
 const router = express.Router();
+
 
 //create a demande
 router.post("",checkAuth,(req,res,next)=> {
@@ -100,7 +102,7 @@ router.get('/:id',(req,res,next)=> {
 
 //delete one demande
 router.delete('/:id',checkAuth,(req,res,next) => {
-  Demande.deleteOne({_id : req.params.id}).then((result)=>{
+  Demande.deleteOne({_id : req.params.id,owner : req.userData.id}).then((result)=>{
     console.log(result);
     if(result.deletedCount > 0){
       res.status(200).json({ message:  'Demande deleted !'});
@@ -128,23 +130,37 @@ router.put("/takeJob/:id",checkAuth, (req, res, next) => {
   });
 });
 
-//when transporter request to take this demande 
+//when the owner accept the transporter request 
 router.put("/acceptJob/:id",checkAuth, (req, res, next) => {
   demande = {
     _id: req.params.id,
-    provider : req.body.provider
+    provider : req.body.provider,
   };
-  console.log(demande);
-  Demande.updateOne({ _id: req.params.id,owner : req.userData.id }, demande).then(result => {
-    if(result.nModified > 0){
-      res.status(200).json({ message: "provider accepted successfully" });
-    }
-    else {
-      res.status(401).json({ message: "Failed !" });
-    }
-  });
+  var a ;
+    const item = {
+      _id: req.body.item,
+      status : "shipping", 
+    } 
+    Item.updateOne({ _id: req.body.item },item).then(result => {
+      if(result.nModified > 0){
+        Demande.updateOne({ _id: req.params.id/*,owner : req.userData.id*/ }, demande).then(result => {
+          console.log("we are here");
+          if((result.nModified > 0)){
+            res.status(200).json({ message: "provider accepted successfully" });
+          }
+          else {
+            res.status(401).json({ message: "Failed !" });
+          }
+          console.log(a);
+        });
+      }
+      else {
+        res.status(401).json({ message: "Failed !" });
+      }
+    });
+
+  console.log(a);
+  
 });
-
-
 
 module.exports = router ;
