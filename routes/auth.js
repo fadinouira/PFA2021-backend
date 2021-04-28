@@ -82,5 +82,28 @@ router.post('/login',(req,res,next) => {
     })
 });
 
+router.get('/:id',(req,res,next)=> {
+  User.findOne({_id : req.params.id}).then((result) => {
+    console.log(result);
+    if(result){
+      res.status(200).json({ 
+        message:  'user',
+        user : {
+          name : result.name ,
+          phone : result.phone ,
+          email : result.email  ,
+          type : result.type
+        }
+      });
+    }
+    else {
+      res.status(404).json({ message: "Delivery does not exist !" });
+    }
+  });
+
+});
+
+
+
 
 module.exports = router ;

@@ -10,6 +10,7 @@ const router = express.Router();
 router.post("",checkAuth,(req,res,next)=> {
   const delivery = new Delivery({
     owner : req.body.id,
+    ownerName : req.body.ownerName,
     originAddress : req.body.originAddress,
     deliveryAddress :req.body.deliveryAddress,
     expectedArrivalDate : req.body.expectedArrivalDate,
@@ -71,6 +72,7 @@ router.get('',(req,res,next)=> {
   deliveryQuery
     .then(documents => {
       fetchedDeliveries = documents ;
+
       return Delivery.countDocuments();
     })
       .then(count => {

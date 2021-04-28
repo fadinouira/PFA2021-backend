@@ -1,7 +1,7 @@
 const path = require("path");
-const exp = require('express') ;
-const bodeyParser = require('body-parser') ;
-const mongoose = require('mongoose') ;
+const exp = require('express');
+const bodeyParser = require('body-parser');
+const mongoose = require('mongoose');
 const authRoutes = require('./routes/auth');
 const deliveriesRoutes = require('./routes/deliveries');
 const demandesRoutes =  require('./routes/demandes');
@@ -25,8 +25,6 @@ app.use((req,res,next)=> {
   res.setHeader('Access-Control-Allow-Headers',"Origin,X-Requested-With,Content-Type,Accept,authorization");
   res.setHeader('Access-Control-Allow-Methods','GET , POST , PATCH , DELETE , OPTIONS,PUT');
   res.header('Access-Control-Allow-Credentials', true);
-
-
   next();
 
 });
