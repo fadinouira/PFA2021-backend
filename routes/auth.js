@@ -4,8 +4,35 @@ const router = express.Router();
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const user = require('../models/user');
+const multer = require('multer');
 
-router.post("/signup",(req,res,next)=> {
+
+const MIME_TYPE_MAP = {
+  'image/png' : 'png',
+  'image/jpeg' : 'jpeg',
+  'image/jpg' : 'jpg'
+}
+
+const storage = multer.diskStorage({
+  destination: (req,file,cb) => {
+    console.log(file);
+    const isValid = MIME_TYPE_MAP[file.mimetype] ;
+    var error = new Error("invalid type");
+    if(isValid) {
+      error = null ;
+    }
+    cb(error,"./images");
+  },
+  filename: (req,file,cb) => {
+    const name = file.originalname.toLowerCase().split(' ').join('-');
+    const text = MIME_TYPE_MAP[file.mimetype];
+    cb(null,name + '-' + Date.now() + '.' + text);
+  }
+});
+
+router.post("/signup",multer({storage : storage}).single("image"),(req,res,next)=> {
+  const url = req.protocol + '://' + req.get("host") ;
+  console.log(req.body);
   bcrypt.hash(req.body.password,10)
   .then(hash => {
     const user = new User({
@@ -15,7 +42,8 @@ router.post("/signup",(req,res,next)=> {
         city : req.body.city,
         location :req.body.location,
         phone : req.body.phone,
-        type : req.body.type
+        type : req.body.type,
+        image: url + "/images/" + req.file.filename,
     });
     user.save()
     .then(result => {
@@ -44,8 +72,14 @@ router.post('/login',(req,res,next) => {
         });
       }
       else {
-        connectedUser.name = user.name ;
-        connectedUser.email = user.email ;
+        connectedUser = {
+          name : user.name ,
+          email : user.email ,
+          image : user.image ,
+          phone : user.image ,
+          city : user.image ,
+        }
+        console.log(connectedUser);
         return bcrypt.compare(req.body.password,user.password);
       }
     })

@@ -18,7 +18,7 @@ mongoose.connect('mongodb+srv://root:fedifedi@mydelevry.grnig.mongodb.net/mydele
 
 app.use(bodeyParser.json());
 app.use(bodeyParser.urlencoded({ extended: false}));
-app.use("/images",exp.static(path.join("backend/images")));
+app.use("/images",exp.static(path.join("./images")));
 
 app.use((req,res,next)=> {
   res.setHeader('Access-Control-Allow-Origin','http://localhost:4200');
