@@ -21,9 +21,11 @@ app.use(bodeyParser.urlencoded({ extended: false}));
 app.use("/images",exp.static(path.join("./images")));
 
 app.use((req,res,next)=> {
-  res.setHeader('Access-Control-Allow-Origin',"*");
+  res.setHeader('Access-Control-Allow-Origin',"197.27.119.42:4200 , http://localhost:4200");
   res.setHeader('Access-Control-Allow-Headers',"Origin,X-Requested-With,Content-Type,Accept,authorization");
   res.setHeader('Access-Control-Allow-Methods','GET , POST , PATCH , DELETE , OPTIONS,PUT');
+  res.setHeader('Access-Control-Allow-Credentials', 'true');
+
   next();
 
 });
