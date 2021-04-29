@@ -21,7 +21,7 @@ app.use(bodeyParser.urlencoded({ extended: false}));
 app.use("/images",exp.static(path.join("./images")));
 
 app.use((req,res,next)=> {
-  res.setHeader('Access-Control-Allow-Origin',"*");
+  res.setHeader('Access-Control-Allow-Origin : *');
   res.setHeader('Access-Control-Allow-Headers',"Origin,X-Requested-With,Content-Type,Accept,authorization");
   res.setHeader('Access-Control-Allow-Methods','GET , POST , PATCH , DELETE , OPTIONS,PUT');
   res.header('Access-Control-Allow-Credentials', true);
