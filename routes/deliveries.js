@@ -8,15 +8,20 @@ const router = express.Router();
 
 //create a delivery
 router.post("",checkAuth,(req,res,next)=> {
+  console.log(req.userData);
   const delivery = new Delivery({
-    owner : req.body.id,
+    owner : req.userData.id,
+    ownerName : req.body.ownerName,
+    ownerPhoto : req.body.ownerPhoto,
+    ownerPhone : req.body.ownerPhone,
+    ownerEmail : req.body.ownerEmail,
     ownerName : req.body.ownerName,
     originAddress : req.body.originAddress,
     deliveryAddress :req.body.deliveryAddress,
     expectedArrivalDate : req.body.expectedArrivalDate,
     onRoad : false ,
     onDestination : false 
-  }) ;
+  });
   console.log(delivery);
   delivery.save().then(result => {
     res.status(201).json({
@@ -76,6 +81,7 @@ router.get('',(req,res,next)=> {
       return Delivery.countDocuments();
     })
       .then(count => {
+        console.log(fetchedDeliveries);
         res.status(200).json({
           message : "result from server:",
           deliveries: fetchedDeliveries,

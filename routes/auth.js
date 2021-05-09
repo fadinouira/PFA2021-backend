@@ -73,11 +73,12 @@ router.post('/login',(req,res,next) => {
       }
       else {
         connectedUser = {
+          id : user.id,
           name : user.name ,
           email : user.email ,
           image : user.image ,
-          phone : user.image ,
-          city : user.image ,
+          phone : user.phone ,
+          city : user.city,
         }
         console.log(connectedUser);
         return bcrypt.compare(req.body.password,user.password);
@@ -93,7 +94,7 @@ router.post('/login',(req,res,next) => {
       const token = jwt.sign(
         {
         email : connectedUser.email,
-        id : connectedUser._id
+        id : connectedUser.id
         },
         "fedi%%aazizasqlkdjlsqkd5556@thisisèé-_&çéçé%%%" ,
         {

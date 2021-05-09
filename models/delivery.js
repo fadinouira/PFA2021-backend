@@ -3,9 +3,9 @@ const Item = require('./item');
 const deliverySchema = mongoose.Schema({
     owner : {type: mongoose.Schema.Types.ObjectId , ref:"User",required:true},
     ownerName : {type: String,required:true},
-    ownerPhoto : {type: String},
-    ownerPhone : {type: Number},
-    ownerEmail : {type: String},
+    ownerPhoto : {type: String,required:true},
+    ownerPhone : {type: Number,required:true},
+    ownerEmail : {type: String,required:true},
     originAddress : {type: String, required : true},
     deliveryAddress : {type: String, required : true},
     expectedArrivalDate : {type: Date, required : true},
