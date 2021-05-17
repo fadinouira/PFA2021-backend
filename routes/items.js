@@ -7,7 +7,9 @@ const router = express.Router();
 //create an Item
 router.post("",checkAuth,(req,res,next)=> {
     const item = new Item({
-      owner : req.body.id,
+      owner : req.userData.id,
+      ownerPhoto :req.body.ownerPhoto,
+      ownerName : req.body.ownerName,
       name : req.body.name,
       status : 0,
       weight  : req.body.weight,
@@ -18,6 +20,7 @@ router.post("",checkAuth,(req,res,next)=> {
         message : "item added succesfully",
         item : {
             id : result._id,
+            owner : result.owner,
             name : result.name,
             status : result.status,
             weight  : result.weight,
@@ -34,7 +37,7 @@ router.get('/:id',(req,res,next)=> {
         if(result){
             res.status(200).json({ 
                 message:  'item received',
-                demande : result
+                item : result
             });
         }
         else {
@@ -44,13 +47,13 @@ router.get('/:id',(req,res,next)=> {
 });
 
 //find all user Items
-router.get('/:id',(req,res,next)=> {
-    Item.findOne({_id : req.params.id, owner : req.userData.id}).then((result) => {
+router.get('',checkAuth,(req,res,next)=> {
+    Item.find({owner : req.userData.id}).then((result) => {
         console.log(result);
         if(result){
             res.status(200).json({ 
                 message:  'item received',
-                demande : result
+                items : result
             });
         }
         else {
@@ -58,6 +61,8 @@ router.get('/:id',(req,res,next)=> {
         }
     });
 });
+
+
 
 //delete item 
 router.delete('/:id',checkAuth,(req,res,next) => {

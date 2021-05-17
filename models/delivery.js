@@ -9,6 +9,7 @@ const deliverySchema = mongoose.Schema({
     originAddress : {type: String, required : true},
     deliveryAddress : {type: String, required : true},
     expectedArrivalDate : {type: Date, required : true},
+    departDate : {type: Date, required : true},
     onRoad : {type: Boolean ,required : true},
     onDestination : {type: Boolean ,required : true},
     acceptedItems : {type : [mongoose.Schema.Types.ObjectId],ref:"Item"},

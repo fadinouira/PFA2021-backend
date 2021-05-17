@@ -18,6 +18,7 @@ router.post("",checkAuth,(req,res,next)=> {
     ownerName : req.body.ownerName,
     originAddress : req.body.originAddress,
     deliveryAddress :req.body.deliveryAddress,
+    departDate : req.body.departDate,
     expectedArrivalDate : req.body.expectedArrivalDate,
     onRoad : false ,
     onDestination : false 
@@ -152,7 +153,7 @@ router.put("/acceptItem/:id",checkAuth, (req, res, next) => {
   const item = {
     _id: req.body.item,
     status : 1, 
-  } 
+  };
   Item.updateOne({ _id: req.body.item },item).then(result => {
     if(result.nModified > 0){
       Delivery.updateOne({ _id: req.params.id,owner : req.userData.id}, delivery).then(result => {
@@ -160,12 +161,17 @@ router.put("/acceptItem/:id",checkAuth, (req, res, next) => {
           res.status(200).json({ message: "Item accepted" });
         }
         else {
+          const item = {
+            _id: req.body.item,
+            status : 0, 
+          };
+          Item.updateOne({ _id: req.body.item },item);
           res.status(401).json({ message: "Item status Failed !" });
         }
       });
     }
     else {
-      res.status(401).json({ message: "Failed !" });
+      res.status(404).json({ message: "Failed !" });
     }
   });  
 });
