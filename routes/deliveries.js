@@ -181,55 +181,40 @@ router.put("/acceptItem/:id",checkAuth, (req, res, next) => {
 router.put("/onRoad/:id",checkAuth, (req, res, next) => {
   delivery = {
     _id: req.params.id,
-    onRoad : true
-    };
-  const item = {
-    _id: req.body.item,
-    status : 2, 
-  } 
-  Item.updateOne({ _id: req.body.item },item).then(result => {
-    if(result.nModified > 0){
-      Delivery.updateOne({ _id: req.params.id,owner : req.userData.id }, delivery).then(result => {
-        if(result.nModified > 0){
-          res.status(200).json({ message: "Items shipped" });
-        }
-        else {
-          res.status(401).json({ message: "Failed !" });
-        }
-      });
-    }
-    else {
-      res.status(401).json({ message: "Failed !" });
-    }
-  });  
-});
-
-
-// when the deelivery owner get to his destination
-router.put("/delivered/:id",checkAuth, (req, res, next) => {
-  delivery = {
-    _id: req.params.id,
-    onDestination : true
+    onRoad : req.body.onRoad,
+    onDestination : req.body.onDestination
   };
-  const item = {
-    _id: req.body.item,
-    status : 2, 
-  } 
-  Item.updateOne({ _id: req.body.item },item).then(result => {
-    if(result.nModified > 0){
-      Delivery.updateOne({ _id: req.params.id,owner : req.userData.id }, delivery).then(result => {
-        if(result.nModified > 0){
-          res.status(200).json({ message: "Items shipped" });
+
+  Delivery.updateOne({ _id: req.params.id, owner : req.userData.id }, delivery).then(result => {
+
+    if(result.nModified > 0) {
+      Delivery.findOne({ _id: req.params.id }).then(result => {
+        console.log(result.acceptedItems);
+        console.log(result.acceptedItems[0]);
+        let i = 0 ;
+        let n = result.acceptedItems.length ;
+        if(n == 0) {
+          res.status(200).json({ message: "on road/destination without items" });
         }
-        else {
-          res.status(401).json({ message: "Failed !" });
-        }
+        result.acceptedItems.forEach(id => {
+          let item = {
+            _id: id,
+            status : req.item, 
+          }
+          Item.updateOne({ _id: id },item).then(result => {
+            i++ ;
+            if(i == n){
+              res.status(200).json({ message: "okay !" });
+            }
+          });
+        });
       });
     }
     else {
-      res.status(401).json({ message: "Failed !" });
+      res.status(401).json({ message: "not the owner or delivery already on Road/Destination" });
     }
-  });  
+  });      
 });
+
 
 module.exports = router ;
