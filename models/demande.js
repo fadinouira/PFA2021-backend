@@ -2,6 +2,10 @@ const mongoose = require('mongoose');
 
 const demandeSchema = mongoose.Schema({
     owner : {type: mongoose.Schema.Types.ObjectId , ref:"User",required:true},
+    ownerName : {type: String, required : true},
+    ownerPhoto : {type: String, required : true},
+    ownerPhone : {type: String, required : true},
+    ownerEmail : {type: String, required : true},
     originAddress : {type: String, required : true},
     deliveryAddress : {type: String, required : true},
     wantedArrivalDate : {type: Date, required : true},

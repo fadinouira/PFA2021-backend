@@ -8,13 +8,19 @@ const router = express.Router();
 //create a demande
 router.post("",checkAuth,(req,res,next)=> {
   const demande = new Demande({
-    owner : req.body.id,
+    owner : req.userData.id,
+    ownerName : req.body.ownerName ,
+    ownerPhoto : req.body.ownerPhoto,
+    ownerPhone : req.body.ownerPhone ,
+    ownerEmail : req.body.ownerEmail ,
     originAddress : req.body.originAddress,
     deliveryAddress :req.body.deliveryAddress,
     wantedArrivalDate : req.body.wantedArrivalDate,
     itemShipped : false,
     itemDelivered : false,
     item : req.body.item,
+    provider: null,
+    listedProviders : []
   }) ;
   console.log(demande);
   demande.save().then(result => {
@@ -23,6 +29,10 @@ router.post("",checkAuth,(req,res,next)=> {
       demande : {
         id : result._id,
         owner : result.owner,
+        ownerName : result.ownerName ,
+        ownerPhoto : result.ownerPhoto,
+        ownerPhone : result.ownerPhone ,
+        ownerEmail : result.ownerEmail ,
         originAddress : result.originAddress,
         deliveryAddress :result.deliveryAddress,
         wantedArrivalDate : result.wantedArrivalDate,

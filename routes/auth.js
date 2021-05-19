@@ -79,6 +79,7 @@ router.post('/login',(req,res,next) => {
           image : user.image ,
           phone : user.phone ,
           city : user.city,
+          type : user.type
         }
         console.log(connectedUser);
         return bcrypt.compare(req.body.password,user.password);
